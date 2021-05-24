@@ -3,7 +3,7 @@ let currentQuiz = 0;
 let correctNum = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('btn_start').addEventListener('click', () => {
+    document.getElementById('btn_start').addEventListener('click', async () => {
 
         const title = document.getElementById('title');
         const explain = document.getElementById('explain');
@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn_start.remove();
 
         //問題を取得
+        /*
         fetch('https://opentdb.com/api.php?amount=10&encode=url3986')
         .then(
             response => {
@@ -39,6 +40,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(error);
             }
         )
+        */
+        try {
+            const response = await fetch('https://opentdb.com/api.php?amount=10&encode=url3986');
+            if (response.ok) {
+                quiz = await response.json();
+                showQuiz(currentQuiz);
+            } else {
+                console.error(`Http status error. status code is ${response.status}, http headers ${response.headers}`)
+            }
+        } catch(e) {
+            console.error(e);
+        }
     });
 });
 
@@ -140,7 +153,7 @@ function arrayShuffle(array) {
 
 function nextQuiz() {
     currentQuiz++;
-    if (currentQuiz < quiz.results.length - 1) {
+    if (currentQuiz < quiz.results.length) {
         showQuiz(currentQuiz);
     } else {
         showResult();
